@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private SimpleDateFormat clock = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         textViewLabelTime = findViewById(R.id.textViewLabelTime);
         textViewClock = findViewById(R.id.textViewClock);
-        clock.setTimeZone(TimeZone.getTimeZone("Europe/Stockholm"));
 
 
         handler.postDelayed(new Runnable() {
@@ -71,9 +71,13 @@ public class MainActivity extends AppCompatActivity {
         NTPUDPClient ntpClient = new NTPUDPClient();
         ntpClient.setDefaultTimeout(3000);
         try {
-            InetAddress inetAddress = InetAddress.getByName("3.se.pool.ntp.org");
+            InetAddress inetAddress = InetAddress.getByName("1.se.pool.ntp.org");
             TimeInfo timeInfoServer = ntpClient.getTime(inetAddress);
             long ntpTime = timeInfoServer.getReturnTime();
+            TimeZone localTimeZone = TimeZone.getTimeZone("Europe/Stockholm");
+            clock.setTimeZone(localTimeZone);
+            Date localTime = new Date(ntpTime + localTimeZone.getOffset(ntpTime));
+
             return clock.format(new Date(ntpTime));
 
         } catch (IOException e) {
