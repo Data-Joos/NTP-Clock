@@ -40,19 +40,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Inflate the layout
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //Set up the ActionBar and navigation
         setSupportActionBar(binding.toolbar);
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        //Initialize UI elements
         textViewLabelTime = findViewById(R.id.textViewLabelTime);
         textViewClock = findViewById(R.id.textViewClock);
 
-
+        // Schedule a task to update the time every 1000 milliseconds (1 second)
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -62,11 +64,12 @@ public class MainActivity extends AppCompatActivity {
         }, 1000);
         super.onResume();
     }
-
+    //Get the current system time
     private String getSystemTime(){
+        clock.setTimeZone(TimeZone.getDefault());
         return clock.format(new Date());
     }
-
+    //Get the time from an NTP server
     private String getNTPTime(){
         NTPUDPClient ntpClient = new NTPUDPClient();
         ntpClient.setDefaultTimeout(3000);
@@ -82,42 +85,44 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "Error: " + e.getMessage();
+            return "Error: " + e.getMessage(); // Handle errors and display an error message
         } finally {
-            ntpClient.close();
+            ntpClient.close(); //Close the NTP client
         }
     }
-
+    //Checking if the network is available
     private boolean isMyNetworkAvailable(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network network = connectivityManager.getActiveNetwork();
         if (network != null){
-            return true;
+            return true; //Network is available
         }else {
-            return false;
+            return false; //Network is not available
         }
     }
+    //Update the time based on network availability
     private void updateTimeOnNetWork(){
         if (isMyNetworkAvailable()){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String networkTimeText = getNTPTime();
+                    String networkTimeText = getNTPTime(); //Get NTP time
                     updateUserInterface(networkTimeText, "Network time", Color.GREEN);
                 }
             }).start();
         }else {
-            String systemTimeText = getSystemTime();
+            String systemTimeText = getSystemTime(); //Get system time
             updateUserInterface(systemTimeText, "System time", Color.RED);
         }
     }
+    //Update the UI with the retrieved time
     private void updateUserInterface(String time, String label, int labelColor) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textViewClock.setText(time);
-                textViewLabelTime.setText(label);
-                textViewLabelTime.setTextColor(labelColor);
+                textViewClock.setText(time); //Set the time on the UI
+                textViewLabelTime.setText(label); //Set the label on the UI
+                textViewLabelTime.setTextColor(labelColor); //Set the label color
             }
         });
     }}
