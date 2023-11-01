@@ -1,7 +1,7 @@
 # NTP-Clock
 
 ## Introduction
-The NTP Clock Android app is designed to ensure that your device always displays the most accurate time when the network connection is available. It uses the Network Time Protocol (NTP) to synchronize the device's time with a reliable NTP server, such as `1.se.pool.ntp.org` in this project. When it is not available, it falls back to the system time on the device.
+The NTP Clock Android app is designed to ensure that your device always displays the most accurate time when the network connection is available. It uses the Network Time Protocol (NTP) to synchronize the device's time with a reliable NTP server, such as `1.se.pool.ntp.org` in this project. When the network is unavailable, it falls back to the system time on the device.
 
 ## Features
 - Displays the current time on the user interface.
