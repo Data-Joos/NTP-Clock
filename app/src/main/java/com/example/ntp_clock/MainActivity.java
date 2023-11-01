@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     //Get the time from an NTP server
     private String getNTPTime(){
         NTPUDPClient ntpClient = new NTPUDPClient();
-        ntpClient.setDefaultTimeout(3000);
+        ntpClient.setDefaultTimeout(5000);
         try {
             InetAddress inetAddress = InetAddress.getByName("1.se.pool.ntp.org");
             TimeInfo timeInfoServer = ntpClient.getTime(inetAddress);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "Error: " + e.getMessage(); // Handle errors and display an error message
+            return "";
         } finally {
             ntpClient.close(); //Close the NTP client
         }
